@@ -58,11 +58,11 @@ INCLUDE_PATHS					:= $(sort $(foreach file,${HEADERS},$(dir ${file})))
 INCLUDE							:= $(strip $(foreach inc,${INCLUDE_PATHS},-I ${inc}))
 LIBS							:= $(foreach lib,${LIBS},-l${lib})
 
-DEPS_LIBS						:= $(shell find libs/* -type f -name "*.hpp")
-DEPS_SRCS						:= $(shell find libs/* -type f -name "*.cpp")
+DEPS_LIBS						:= $(shell find deps/* -type f -name "*.hpp")
+DEPS_SRCS						:= $(shell find deps/* -type f -name "*.cpp")
 DEPS_INCLUDE_PATHS				:= $(sort $(foreach lib,${DEPS_LIBS},$(dir ${lib})))
 DEPS_INCLUDE					:= $(strip $(foreach lib,${DEPS_INCLUDE_PATHS},-I ${lib}))
-DEPS_OBJS						:= $(foreach src,${DEPS_SRCS},libs/obj/$(notdir $(call SRC2OBJ,${src})))
+DEPS_OBJS						:= $(foreach src,${DEPS_SRCS},deps/obj/$(notdir $(call SRC2OBJ,${src})))
 
 ifeq (${C},)
 	C							:= clang
