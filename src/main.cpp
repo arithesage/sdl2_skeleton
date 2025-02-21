@@ -1,42 +1,28 @@
-#include <SDL2/SDL.h>
-
 #include <iostream>
 
 using std::cerr;
 using std::cout;
 using std::endl;
 
+#include <SDL.hpp>
 
-SDL_Renderer* renderer = nullptr;
-SDL_Window* window = nullptr;
+bool running = false;
 
 
 int main ()
 {
-    if (!SDL_Init (SDL_INIT_EVERYTHING))
+    if (SDL::Init ("SDL test app", 1280, 720))
     {
-        cerr << "SDL failed initializing: " << SDL_GetError () << endl;
         return 1;
     }
 
-
-    window = SDL_CreateWindow ("SDL test app", SDL_WINDOWPOS_CENTERED,
-                                                SDL_WINDOWPOS_CENTERED,
-                                                1280, 720);
-
-    if (window == nullptr)
+    while (running)
     {
-        cerr << "Window creation failed: " << SDL_GetError () << endl;
-        return 1;
+        SDL::ClearWindow ();
+        SDL::RefreshWindow ();
     }
 
-    cout << "SDL initialized.\n";
-
-    delete window;
-
-    SDL_Quit ();
-
-    cout << "SDL shut off.\n";
+    SDL::Shutdown ();
 
     return 0;
 }
