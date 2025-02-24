@@ -22,6 +22,23 @@ class SDLEventListener : public Listener
 };
 
 
+class SDLKeyListener : public Listener2P<bool, SDL_Keycode>
+{
+    protected:
+        virtual void onKeyPressed (SDL_Keycode key) = 0;
+        virtual void onKeyRelease (SDL_Keycode key) = 0;
+
+    public:
+        void _Notify (bool status, SDL_Keycode key) override;
+};
+
+
+class SDLKeyEvent : public Event2P<bool, SDL_Keycode>
+{
+
+};
+
+
 class SDLQuitEvent : public Event
 {
 
@@ -37,7 +54,9 @@ class SDL
         static SDL_Renderer* renderer;
         static SDL_Window* window;
 
+        static SDLKeyEvent onKey;
         static SDLQuitEvent onQuit;
+        static FuncPtrP1<SDL_Keycode> onKeyUpCallback;
         static FuncPtr onQuitCallback;
 
     public:
@@ -49,8 +68,11 @@ class SDL
 
         static void ClearWindow ();
         static void CheckForEvents ();
+        static void OnKey (SDLKeyListener listener);
+        static void OnKeyUp (FuncPtrP1<SDL_Keycode> callback);
         static void OnQuit (FuncPtr callback);
         static void OnQuit (SDLEventListener* listener);
+        static const char* KeyName (SDL_Keycode key);
         static void RefreshWindow ();
         static SDL_Renderer* Renderer ();
         static void SetClearColor (SDL_Color color);
