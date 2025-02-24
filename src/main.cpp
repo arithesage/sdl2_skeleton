@@ -16,8 +16,16 @@ int main ()
         return 1;
     }
 
+    SDL::OnQuit ([]() -> void {
+        running = false;
+    });
+
+    running = true;
+
     while (running)
     {
+        SDL::CheckForEvents ();
+
         SDL::ClearWindow ();
         SDL::RefreshWindow ();
     }

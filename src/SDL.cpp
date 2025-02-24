@@ -1,9 +1,19 @@
 #include <SDL.hpp>
 
-#include <SDL2/SDL.h>
-#include <Common.hpp>
+#include <Log.hpp>
 
 
+void SDLEventListener::_Notify ()
+{
+    onQuit ();
+}
+
+
+
+
+SDL_Event SDL::event;
+SDLQuitEvent SDL::onQuit;
+FuncPtr SDL::onQuitCallback = nullptr;
 SDL_Renderer* SDL::renderer = nullptr;
 SDL_Window* SDL::window = nullptr;
 
@@ -14,7 +24,7 @@ bool SDL::Init (const char* windowTitle,
 {
     if (SDL_Init (SDL_INIT_EVERYTHING) < 0)
     {
-        log_ec ("Failed initializing SDL.", SDL_GetError());
+        Log::ec ("Failed initializing SDL.", SDL_GetError());
         return false;
     }
 
@@ -29,7 +39,7 @@ bool SDL::Init (const char* windowTitle,
 
     if (window == nullptr)
     {
-        log_ec ("Failed creating window.", SDL_GetError ());
+        Log::ec ("Failed creating window.", SDL_GetError ());
         return false;
     }
 
@@ -43,7 +53,7 @@ bool SDL::Init (const char* windowTitle,
 
     if (renderer == nullptr)
     {
-        log_ec ("Failed creating renderer.", SDL_GetError ());
+        Log::ec ("Failed creating renderer.", SDL_GetError ());
         return false;
     }
 
@@ -62,6 +72,40 @@ void SDL::Shutdown ()
 void SDL::ClearWindow ()
 {
     SDL_RenderClear (renderer);
+}
+
+
+void SDL::CheckForEvents ()
+{
+    SDL_PollEvent (&event);
+
+    if (event.type == SDL_QUIT)
+    {
+        if (onQuitCallback != nullptr)
+        {
+            onQuitCallback ();
+        }
+
+        onQuit.Fire ();
+    }
+}
+
+
+void SDL::OnQuit (FuncPtr callback)
+{
+    if (callback != nullptr)
+    {
+        onQuitCallback = callback;
+    }
+}
+
+
+void SDL::OnQuit (SDLEventListener* listener)
+{
+    if (listener != nullptr)
+    {
+        onQuit.Subscribe (listener);
+    }
 }
 
 

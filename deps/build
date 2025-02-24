@@ -7,8 +7,13 @@ ROOT="${SCRIPT_DIR}"
 
 
 # Include all .cpp files that needs building
-LIBS=("")
-LIBs+=("")
+#
+# Example
+# LIBS=("Log/Log.cpp")
+# LIBS+=("StringHelpers/StringHelpers.cpp")
+LIBS=("ANSI/ANSI.cpp")
+LIBS+=("StringHelpers/StringHelpers.cpp")
+LIBS+=("Log/Log.cpp")
 
 # Any required flags
 BUILD_FLAGS=""
