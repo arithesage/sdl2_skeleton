@@ -25,13 +25,13 @@ void SDLKeyListener::_Notify (bool status, SDL_Keycode key)
 
 
 SDL_Event SDL::event;
+SDL_Renderer* SDL::renderer = nullptr;
+SDL_Window* SDL::window = nullptr;
 
 SDLKeyEvent SDL::onKey;
 SDLQuitEvent SDL::onQuit;
-FuncPtrP1<SDL_Keycode> SDL::onKeyUpCallback = nullptr;
+FuncPtrP2<bool, SDL_Keycode> SDL::onKeyCallback = nullptr;
 FuncPtr SDL::onQuitCallback = nullptr;
-SDL_Renderer* SDL::renderer = nullptr;
-SDL_Window* SDL::window = nullptr;
 
 
 bool SDL::Init (const char* windowTitle,
@@ -105,23 +105,35 @@ void SDL::CheckForEvents ()
         onQuit.Fire ();
     }
 
-    if (event.type == SDL_KEYUP)
+    if ((event.type == SDL_KEYUP) || (event.type == SDL_KEYDOWN))
     {
-        if (onKeyUpCallback != nullptr)
+        bool keypressed = (event.type == SDL_KEYDOWN);
+        SDL_Keycode key = event.key.keysym.sym;
+
+        if (onKeyCallback != nullptr)
         {
-            onKeyUpCallback (event.key.keysym.sym);
+            onKeyCallback (keypressed, key);
         }
 
-        //onKeyUp.Fire (event.key.keysim.sym);
+        onKey.Fire (keypressed, key);
     }
 }
 
 
-void SDL::OnKeyUp (FuncPtrP1<SDL_Keycode> callback)
+void SDL::OnKey (SDLKeyListener* listener)
+{
+    if (listener != nullptr)
+    {
+        onKey.Subscribe (listener);
+    }
+}
+
+
+void SDL::OnKey (FuncPtrP2<bool, SDL_Keycode> callback)
 {
     if (callback != nullptr)
     {
-        onKeyUpCallback = callback;
+        onKeyCallback = callback;
     }
 }
 

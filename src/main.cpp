@@ -8,7 +8,7 @@ using std::endl;
 #include <SDL2/SDL.h>
 
 #include <SDL.hpp>
-
+#include <FontSupport.hpp>
 
 bool running = false;
 
@@ -24,9 +24,21 @@ int main ()
         running = false;
     });
 
-    SDL::OnKeyUp ([](SDL_Keycode key) -> void {
-        cout << "Released " << SDL::KeyName (key) << "." << endl;
+    SDL::OnKey ([](bool pressed, SDL_Keycode key) -> void {
+        if (pressed)
+        {
+            cout << "Pressing ";
+        }
+        else
+        {
+            cout << "Released ";
+        }
+
+        cout << SDL::KeyName (key) << "." << endl;
     });
+
+    
+    FontSupport::Init (SDL::Renderer ());
 
     running = true;
 

@@ -56,7 +56,7 @@ class SDL
 
         static SDLKeyEvent onKey;
         static SDLQuitEvent onQuit;
-        static FuncPtrP1<SDL_Keycode> onKeyUpCallback;
+        static FuncPtrP2<bool, SDL_Keycode> onKeyCallback;
         static FuncPtr onQuitCallback;
 
     public:
@@ -68,8 +68,8 @@ class SDL
 
         static void ClearWindow ();
         static void CheckForEvents ();
-        static void OnKey (SDLKeyListener listener);
-        static void OnKeyUp (FuncPtrP1<SDL_Keycode> callback);
+        static void OnKey (SDLKeyListener* listener);
+        static void OnKey (FuncPtrP2<bool, SDL_Keycode> callback);
         static void OnQuit (FuncPtr callback);
         static void OnQuit (SDLEventListener* listener);
         static const char* KeyName (SDL_Keycode key);

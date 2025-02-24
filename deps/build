@@ -13,17 +13,15 @@ ROOT="${SCRIPT_DIR}"
 # LIBS+=("StringHelpers/StringHelpers.cpp")
 LIBS=("ANSI/ANSI.cpp")
 LIBS+=("StringHelpers/StringHelpers.cpp")
+LIBS+=("SystemHelpers/SystemHelpers.cpp")
+LIBS+=("FilesystemHelpers/FilesystemHelpers.cpp")
 LIBS+=("Log/Log.cpp")
 
 # Any required flags
-BUILD_FLAGS=""
-
+#
 # Example
 # BUILD_FLAGS="-std=c++17"
-
-# Example
-# LIBS=("SystemHelpers/SystemHelpers.cpp")
-# LIBS+=("StringHelpers/StringHelpers.cpp")
+BUILD_FLAGS=""
 
 
 
@@ -48,8 +46,8 @@ fi
 mkdir -p "$OBJS"
 
 
-echo "Building libs ..."
-echo "-----------------"
+echo "Building dependencies ..."
+echo "-------------------------"
 echo ""
 
 for lib in "${LIBS[@]}"
@@ -76,5 +74,5 @@ do
 done
 
 echo ""
-echo "All libs are built."
+echo "All dependencies are built."
 echo ""
