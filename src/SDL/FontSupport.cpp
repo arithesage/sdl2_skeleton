@@ -6,7 +6,7 @@
 #include <FilesystemHelpers.hpp>
 
 
-const char* FontSupport::DEFAULT_FONTS_PATH = "res/fonts/";
+const char* FontSupport::DEFAULT_FONTS_PATH = "res/fonts";
 const char* FontSupport::DEFAULT_FONT = "Roboto-Regular.ttf";
 const int FontSupport::DEFAULT_FONT_SIZE = 16;
 
@@ -81,7 +81,16 @@ TTF_Font* FontSupport::LoadFont (const char* name,
             if (FSHelpers::IsFile (fullFontPath))
             {
                 loadedFont = TTF_OpenFont (fullFontPath.c_str(), size);
-                Log::i ("Loaded font '${0}'.", { fullFontPath.c_str() });
+
+                if (loadedFont == nullptr)
+                {
+                    Log::e ("Failed loading font '${0}'.", { fullFontPath.c_str() });                
+                }
+                else
+                {
+                    Log::i ("Loaded font '${0}'.", { fullFontPath.c_str() });
+                }
+                
                 break;
             }
         }

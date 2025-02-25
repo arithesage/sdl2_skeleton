@@ -1,8 +1,8 @@
-#ifndef __VECTOR_HELPERS__
-#define __VECTOR_HELPERS__
+#ifndef __LIST_HELPERS__
+#define __LIST_HELPERS__
 
-#include <initializer_list>
-#include <vector>
+#include <List.hpp>
+#include <LangHelpers.hpp>
 
 #ifndef __TYPES__
     template <typename Type>
@@ -14,12 +14,12 @@ class VectorHelpers
 {
     public:
         /**
-         * Returns a vector containing all the provided items.
-         * The items must be provided betwee { and }.
+         * Returns a vector/list containing all the provided items.
+         * The items must be provided between { and }.
          * Example: Pack<const char*> ({ "one", "two" })
          */
         template <typename ItemType>
-        static List<ItemType> Pack (std::initializer_list<ItemType> items)
+        static List<ItemType> Pack (Args<ItemType> items)
         {
             List<ItemType> list;
 
@@ -31,5 +31,7 @@ class VectorHelpers
             return list;
         }
 };
+
+using ListHelpers = VectorHelpers;
 
 #endif

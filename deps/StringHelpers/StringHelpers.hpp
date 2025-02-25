@@ -3,19 +3,12 @@
 
 #include <cstring>
 #include <istream>
-#include <iostream>
 #include <iomanip>
 #include <sstream>
-#include <vector>
 
 #include <LangHelpers.hpp>
-
-#ifndef __TYPES__
-    using String = std::string;
-
-    template <typename Type>
-    using List = std::vector<Type>;
-#endif
+#include <List.hpp>
+#include <String.hpp>
 
 
 class StringHelpers

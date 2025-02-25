@@ -1,11 +1,7 @@
 #ifndef __LOG__
 #define __LOG__
 
-#ifndef __TYPES__
-    #include <iostream>
-    using String = std::string;
-#endif
-
+#include <String.hpp>
 #include <LangHelpers.hpp>
 
 

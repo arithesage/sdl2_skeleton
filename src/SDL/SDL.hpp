@@ -68,6 +68,8 @@ class SDL
 
         static void ClearWindow ();
         static void CheckForEvents ();
+        static void DestroySurface (SDL_Surface* surface);
+        static void DestroyTexture (SDL_Texture* texture);
         static void OnKey (SDLKeyListener* listener);
         static void OnKey (FuncPtrP2<bool, SDL_Keycode> callback);
         static void OnQuit (FuncPtr callback);

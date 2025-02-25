@@ -1,12 +1,7 @@
 #ifndef __EVENT__
 #define __EVENT__
 
-#ifndef __TYPES__
-#include <vector>
-
-template <typename T>
-using List = std::vector<T>;
-#endif
+#include <List.hpp>
 
 #include <Listener.hpp>
 

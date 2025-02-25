@@ -120,6 +120,24 @@ void SDL::CheckForEvents ()
 }
 
 
+void SDL::DestroySurface (SDL_Surface* surface)
+{
+    if (surface != nullptr)
+    {
+        SDL_FreeSurface (surface);
+    }
+}
+
+
+void SDL::DestroyTexture (SDL_Texture* texture)
+{
+    if (texture != nullptr)
+    {
+        SDL_DestroyTexture (texture);
+    }
+}
+
+
 void SDL::OnKey (SDLKeyListener* listener)
 {
     if (listener != nullptr)

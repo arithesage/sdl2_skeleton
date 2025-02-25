@@ -1,4 +1,5 @@
 #include <StringHelpers.hpp>
+
 #include <VectorHelpers.hpp>
 
 
@@ -85,8 +86,19 @@ String StringHelpers::Concat (List<String> chunks, const char* separator)
 String StringHelpers::Concat (Args<String> chunks, String separator)
 {    
     List<String> _chunks = ListFromArgs<String> (chunks);
+    String _string = "";
 
-    return Concat (chunks, separator);
+    for (int c = 0; c < _chunks.size(); c ++)
+    {
+        _string += _chunks[c];
+
+        if (c < (_chunks.size() - 1))
+        {
+            _string += separator;
+        }
+    }
+
+    return _string;
 }
 
 

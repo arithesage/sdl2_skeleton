@@ -26,7 +26,7 @@ bool FilesystemHelpers::IsFile (String path)
 }
 
 
-String FilesystemHelpers::MakePath (std::initializer_list<String> pathParts)
+String FilesystemHelpers::MakePath (Args<String> pathParts)
 {
     String sep = "";
 
