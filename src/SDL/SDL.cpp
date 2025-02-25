@@ -33,6 +33,8 @@ SDLQuitEvent SDL::onQuit;
 FuncPtrP2<bool, SDL_Keycode> SDL::onKeyCallback = nullptr;
 FuncPtr SDL::onQuitCallback = nullptr;
 
+Pool<SDLGraphic> SDL::graphics;
+
 
 bool SDL::Init (const char* windowTitle,
                 int width,

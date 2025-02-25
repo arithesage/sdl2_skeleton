@@ -6,10 +6,14 @@
 #include <FunctionPointers.hpp>
 #include <Listener.hpp>
 #include <Event.hpp>
+#include <Pool.hpp>
+
 
 struct SDL_Color;
 struct SDL_Renderer;
 struct SDL_Window;
+
+class SDLGraphic;
 
 
 class SDLEventListener : public Listener
@@ -45,8 +49,6 @@ class SDLQuitEvent : public Event
 };
 
 
-
-
 class SDL
 {
     private:
@@ -58,6 +60,8 @@ class SDL
         static SDLQuitEvent onQuit;
         static FuncPtrP2<bool, SDL_Keycode> onKeyCallback;
         static FuncPtr onQuitCallback;
+
+        static Pool<SDLGraphic> graphics;
 
     public:
         static bool Init (const char* windowTitle,

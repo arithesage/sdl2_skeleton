@@ -16,6 +16,7 @@ LIBS+=("StringHelpers/StringHelpers.cpp")
 LIBS+=("SystemHelpers/SystemHelpers.cpp")
 LIBS+=("FilesystemHelpers/FilesystemHelpers.cpp")
 LIBS+=("Log/Log.cpp")
+LIBS+=("Pool/Resource.cpp")
 
 # Any required flags
 #
