@@ -1,6 +1,8 @@
 #include <SDL.hpp>
 
 #include <Log.hpp>
+#include <FilesystemHelpers.hpp>
+#include <ImageSupport.hpp>
 
 
 void SDLEventListener::_Notify ()
@@ -33,7 +35,9 @@ SDLQuitEvent SDL::onQuit;
 FuncPtrP2<bool, SDL_Keycode> SDL::onKeyCallback = nullptr;
 FuncPtr SDL::onQuitCallback = nullptr;
 
-Pool<SDLGraphic> SDL::graphics;
+#ifdef __SDL_USE_RESOURCE_POOL__
+    Pool<SDLGraphic> SDL::graphics;
+#endif
 
 
 bool SDL::Init (const char* windowTitle,
@@ -122,6 +126,19 @@ void SDL::CheckForEvents ()
 }
 
 
+SDL_Texture* SDL::CreateTextureFrom (SDL_Surface* surface)
+{
+    SDL_Texture* texture = nullptr;
+
+    if (surface != nullptr)
+    {
+        texture = SDL_CreateTextureFromSurface (renderer, surface);
+    }
+
+    return texture;
+}
+
+
 void SDL::DestroySurface (SDL_Surface* surface)
 {
     if (surface != nullptr)
@@ -137,6 +154,27 @@ void SDL::DestroyTexture (SDL_Texture* texture)
     {
         SDL_DestroyTexture (texture);
     }
+}
+
+
+SDL_Texture* SDL::LoadTexture (const char* filePath)
+{
+    SDL_Texture* loadedTexture = nullptr;
+
+    if (FSHelpers::IsFile (filePath))
+    {
+        if (ImageSupport::IsReady ())
+        {
+            SDL_Surface* image = ImageSupport::LoadImage (filePath);
+
+            if (image != nullptr)
+            {
+                loadedTexture = SDL_CreateTextureFromSurface (renderer, image);
+            }
+        }
+    }
+
+    return loadedTexture;
 }
 
 

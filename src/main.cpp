@@ -1,14 +1,11 @@
-#include <iostream>
-
-using std::cerr;
-using std::cout;
-using std::endl;
+#include <Terminal.hpp>
 
 // Needed for reading keycodes
 #include <SDL2/SDL.h>
 
 #include <SDL.hpp>
 #include <FontSupport.hpp>
+#include <ImageSupport.hpp>
 
 bool running = false;
 
@@ -37,8 +34,9 @@ int main ()
         cout << SDL::KeyName (key) << "." << endl;
     });
 
-    
+
     FontSupport::Init (SDL::Renderer ());
+    ImageSupport::Init (SDL::Renderer ());
 
     running = true;
 
@@ -50,6 +48,8 @@ int main ()
         SDL::RefreshWindow ();
     }
 
+    FontSupport::Destroy ();
+    ImageSupport::Destroy ();
     SDL::Shutdown ();
 
     return 0;

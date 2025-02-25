@@ -33,13 +33,31 @@ class FontSupport
         static List<const char*> fontsPaths;
 
     public:
-        static void Init (SDL_Renderer* renderer);        
+        static void Init (SDL_Renderer* renderer);
         static void Destroy ();
         static bool IsReady ();
 
         static void AddFontPath (const char* path);
+        
+        /**
+         * Loads a font from the resources folder.
+         * The default path is 'res/fonts'.
+         * You can add more paths for searching.
+         * 
+         * @param filename The font file name, without path.
+         * @param size The size of the loaded font.
+         * 
+         * @returns A pointer to the loaded font.
+         */
+        static TTF_Font* LoadFont (const char* fileName, int size);
 
-        static TTF_Font* LoadFont (const char* name, const char* filePath, int size);
+        /**
+         * Loads a font from anywhere.
+         * 
+         * As opposite with LoadFont function, this one requires
+         * the font full path.
+         */
+        static TTF_Font* LoadExternalFont (const char* filePath, int size);
 };
 
 #endif

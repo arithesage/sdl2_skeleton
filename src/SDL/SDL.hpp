@@ -6,14 +6,21 @@
 #include <FunctionPointers.hpp>
 #include <Listener.hpp>
 #include <Event.hpp>
-#include <Pool.hpp>
+
+#ifdef __SDL_USE_RESOURCE_POOL__
+    #ifndef __RESOURCE_POOL__
+    #include <Pool.hpp>
+    #endif
+#endif
 
 
 struct SDL_Color;
 struct SDL_Renderer;
 struct SDL_Window;
 
-class SDLGraphic;
+#ifdef __SDL_USE_RESOURCE_POOL__
+    class SDLGraphic;
+#endif
 
 
 class SDLEventListener : public Listener
@@ -61,7 +68,9 @@ class SDL
         static FuncPtrP2<bool, SDL_Keycode> onKeyCallback;
         static FuncPtr onQuitCallback;
 
+    #ifdef __SDL_USE_RESOURCE_POOL__
         static Pool<SDLGraphic> graphics;
+    #endif
 
     public:
         static bool Init (const char* windowTitle,
@@ -72,8 +81,10 @@ class SDL
 
         static void ClearWindow ();
         static void CheckForEvents ();
+        static SDL_Texture* CreateTextureFrom (SDL_Surface* surface);
         static void DestroySurface (SDL_Surface* surface);
         static void DestroyTexture (SDL_Texture* texture);
+        static SDL_Texture* LoadTexture (const char* filePath);
         static void OnKey (SDLKeyListener* listener);
         static void OnKey (FuncPtrP2<bool, SDL_Keycode> callback);
         static void OnQuit (FuncPtr callback);

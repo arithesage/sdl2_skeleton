@@ -26,7 +26,8 @@ void FontSupport::Init (SDL_Renderer* renderer)
     else
     {
         Log::i ("TrueType font support available.");
-        LoadFont ("default", DEFAULT_FONT, DEFAULT_FONT_SIZE);
+
+        defaultFont = LoadFont (DEFAULT_FONT, DEFAULT_FONT_SIZE);
 
         ready = true;
     }
@@ -59,8 +60,7 @@ void FontSupport::AddFontPath (const char* path)
 }
 
 
-TTF_Font* FontSupport::LoadFont (const char* name, 
-                                 const char* fontFileName, 
+TTF_Font* FontSupport::LoadFont (const char* fontFileName, 
                                  int size)
 {
     TTF_Font* loadedFont = nullptr;
@@ -84,7 +84,7 @@ TTF_Font* FontSupport::LoadFont (const char* name,
 
                 if (loadedFont == nullptr)
                 {
-                    Log::e ("Failed loading font '${0}'.", { fullFontPath.c_str() });                
+                    Log::e ("Failed loading font '${0}'.", { fullFontPath.c_str() });
                 }
                 else
                 {
@@ -96,5 +96,29 @@ TTF_Font* FontSupport::LoadFont (const char* name,
         }
     }
         
+    return loadedFont;
+}
+
+
+TTF_Font* LoadExternalFont (const char* filePath, int size)
+{
+    TTF_Font* loadedFont = nullptr;
+
+    if (!FSHelpers::IsFile (filePath))
+    {
+        Log::e ("Failed loading font '${0}'.", { filePath });
+        return nullptr;
+    }
+
+    loadedFont = TTF_OpenFont (filePath, size);
+
+    if (loadedFont == nullptr)
+    {
+        Log::e ("Failed loading font '${0}'.", { filePath });
+        return nullptr;
+    }
+
+    Log::i ("Loaded font '${0}'.", { filePath });
+
     return loadedFont;
 }
