@@ -64,10 +64,11 @@ else
 endif
 
 include Commands.mk
+include Functions.mk
 
 
 # ================ OBJS PATHS GEN ========================================
-OBJS							:= $(foreach src,${SRCS},${OBJS_PATH}/$(notdir $(subst .c,.o,$(subst .cpp,.o,${src}))))
+OBJS							:= $(foreach src,${SRCS},$(call SRC2OBJ,${src}))
 
 
 # ================ BUILD RECIPES =========================================
@@ -84,17 +85,12 @@ ${OBJS_PATH}:
 	$(shell ${MKTREE} ${OBJS_PATH})
 
 
-# Builds all C files mirroring their folder tree
-${OBJS_PATH}/%.o: %.c
-	$(shell ${MKTREE} $(dir $@))
-	${C} -c $< -o $@ ${INCLUDE} ${CFLAGS}
+# Builds all CPP files. Each obj file will be placed under ${OBJS_PATH}
+$(foreach src,${C_SRCS},$(eval $(call BUILD_C,${src})))
 
 
-# Builds all CPP files mirroring their folder tree
-${OBJS_PATH}/%.o: $(notdir %.cpp)
-	$(shell ${MKTREE} $(dir $@))
-	${CXX} -c $< -o $@ ${INCLUDE} ${CXXFLAGS}
-
+# Builds all CPP files. Each obj file will be placed under ${OBJS_PATH}
+$(foreach src,${CPP_SRCS},$(eval $(call BUILD_CPP,${src})))
 
 
 info:

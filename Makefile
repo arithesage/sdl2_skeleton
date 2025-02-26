@@ -66,7 +66,7 @@ DEPS_SRCS						:= $(strip ${DEPS_C_SRCS} ${DEPS_CPP_SRCS})
 DEPS_HEADERS					:= $(shell find deps/* -type f -name "*.hpp")
 DEPS_INCLUDE_PATHS				:= $(sort $(foreach file,${DEPS_HEADERS},$(dir ${file})))
 DEPS_INCLUDE					:= $(strip $(foreach inc,${DEPS_INCLUDE_PATHS},-I ${inc}))
-DEPS_OBJS						:= $(foreach src,${DEPS_SRCS},${DEPS_OBJS_PATH}/$(notdir $(subst .c,.o,$(subst .cpp,.o,${src})))
+DEPS_OBJS						:= $(foreach src,${DEPS_SRCS},${DEPS_OBJS_PATH}/$(notdir $(subst .c,.o,$(subst .cpp,.o,${src}))))
 
 ifeq (${C},)
 	C							:= clang
@@ -92,7 +92,6 @@ clean:
 
 cleandeps:
 	${MAKE} -C ${DEPS} clean
-#	$(shell ${RMTREE} deps/obj)
 
 
 deps:
