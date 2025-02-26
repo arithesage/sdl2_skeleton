@@ -37,6 +37,13 @@ int main ()
 
     FontSupport::Init (SDL::Renderer ());
     ImageSupport::Init (SDL::Renderer ());
+    
+    SDL_Surface* img = ImageSupport::LoadImage ("res/img/coin.png");
+
+    if (img != nullptr)
+    {
+        SDL::DestroySurface (img);
+    }
 
     running = true;
 
@@ -48,8 +55,17 @@ int main ()
         SDL::RefreshWindow ();
     }
 
-    FontSupport::Destroy ();
-    ImageSupport::Destroy ();
+    if (FontSupport::IsReady ())
+    {
+        FontSupport::Destroy ();
+    }
+    
+    if (ImageSupport::IsReady ())
+    {
+        ImageSupport::Destroy ();
+    
+    }
+
     SDL::Shutdown ();
 
     return 0;

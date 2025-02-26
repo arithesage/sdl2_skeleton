@@ -2,10 +2,6 @@
 #define __SDL_IMAGE_SUPPORT__
 
 
-#define IMG_FORMATS IMG_INIT_JPG | IMG_INIT_PNG | \
-                    IMG_INIT_TIF | IMG_INIT_WEBP
-
-
 struct SDL_Renderer;
 struct SDL_Surface;
 

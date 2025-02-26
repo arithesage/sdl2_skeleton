@@ -50,6 +50,8 @@ bool SDL::Init (const char* windowTitle,
         return false;
     }
 
+    Log::i ("SDL initialized.");
+
     window = SDL_CreateWindow (
         windowTitle,
         SDL_WINDOWPOS_CENTERED,
@@ -133,6 +135,11 @@ SDL_Texture* SDL::CreateTextureFrom (SDL_Surface* surface)
     if (surface != nullptr)
     {
         texture = SDL_CreateTextureFromSurface (renderer, surface);
+
+        if (texture == nullptr)
+        {
+            Log::ec ("Failed!", SDL_GetError());
+        }
     }
 
     return texture;

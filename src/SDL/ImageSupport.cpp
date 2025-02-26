@@ -7,6 +7,10 @@
 #include <FilesystemHelpers.hpp>
 
 
+#define IMG_FORMATS IMG_INIT_JPG | IMG_INIT_PNG | \
+                    IMG_INIT_TIF | IMG_INIT_WEBP
+
+
 bool ImageSupport::ready = false;
 
 
@@ -23,7 +27,10 @@ void ImageSupport::Init (SDL_Renderer* renderer)
 {
     if (renderer != nullptr)
     {
-        if (IMG_Init (IMG_FORMATS) != IMG_FORMATS)
+        int imageFormatsToEnable = IMG_FORMATS;
+        int enabledImageFormats = IMG_Init (imageFormatsToEnable);
+
+        if (enabledImageFormats != imageFormatsToEnable)
         {
             Log::ec ("Failed initializing SDL_image.", SDL_GetError());
         }
