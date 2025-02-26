@@ -1,0 +1,109 @@
+# ========================================================================
+# Makefile orienteed to build a bunch of libraries
+# ========================================================================
+
+# ==================== CONFIG ============================================
+LIBS							:=
+CFLAGS							:=
+CXXFLAGS						:=
+LDFLAGS							:=
+
+C_SRCS							:=
+
+CPP_SRCS						:= ANSI/ANSI.cpp
+CPP_SRCS						+= Log/Log.cpp
+CPP_SRCS						+= StringHelpers/StringHelpers.cpp
+CPP_SRCS						+= Pool/Resource.cpp
+CPP_SRCS						+= SystemHelpers/SystemHelpers.cpp
+CPP_SRCS						+= FilesystemHelpers/FilesystemHelpers.cpp
+
+INCLUDE							:= .
+
+
+# =================== INTERNALS ==========================================
+ifneq (${WINDIR},)
+	SYSTEM						:= windows
+else
+	UNAME						:= $(shell uname)
+
+	ifeq (${UNAME},Darwin)
+		SYSTEM					:= macos
+	else ifeq (${UNAME},Linux)
+		SYSTEM					:= linux
+	else
+		SYSTEM					:= other
+	endif
+endif
+
+OBJ								:= obj
+OBJS_PATH						:= ${OBJ}/${SYSTEM}
+
+SRCS							:= $(strip ${C_SRCS} ${CPP_SRCS})
+
+HEADER_PATHS					:= $(sort $(foreach file,${C_SRCS},$(dir ${file})))
+HEADER_PATHS					+= $(sort $(foreach file,${CPP_SRCS},$(dir ${file})))
+HEADER_PATHS					+= $(sort $(foreach file,${INCLUDE},$(dir ${file})))
+
+INCLUDE							:= $(strip $(foreach inc,${HEADER_PATHS},-I ${inc}))
+LIBS							:= $(foreach lib,${LIBS},-l${lib})
+
+C								:= clang
+CXX								:= clang++
+
+GLOBAL_FLAGS					:= -Wall -pedantic
+
+CFLAGS							+= ${GLOBAL_FLAGS}
+CXXFLAGS						+= ${GLOBAL_FLAGS}
+
+ifdef RELEASE
+	CFLAGS						+= -O3
+	CXXFLAGS					+= -O3
+else
+	CFLAGS						+= -g
+	CXXFLAGS					+= -g
+endif
+
+include Commands.mk
+
+
+# ================ OBJS PATHS GEN ========================================
+OBJS							:= $(foreach src,${SRCS},${OBJS_PATH}/$(notdir $(subst .c,.o,$(subst .cpp,.o,${src}))))
+
+
+# ================ BUILD RECIPES =========================================
+.PHONY: all clean info
+
+all: ${OBJS_PATH} ${OBJS}
+
+
+clean:
+	$(shell ${RMTREE} ${OBJ})
+
+
+${OBJS_PATH}:
+	$(shell ${MKTREE} ${OBJS_PATH})
+
+
+# Builds all C files mirroring their folder tree
+${OBJS_PATH}/%.o: %.c
+	$(shell ${MKTREE} $(dir $@))
+	${C} -c $< -o $@ ${INCLUDE} ${CFLAGS}
+
+
+# Builds all CPP files mirroring their folder tree
+${OBJS_PATH}/%.o: $(notdir %.cpp)
+	$(shell ${MKTREE} $(dir $@))
+	${CXX} -c $< -o $@ ${INCLUDE} ${CXXFLAGS}
+
+
+
+info:
+	$(info CFLAGS: ${CFLAGS})
+	$(info CXXFLAGS: ${CXXFLAGS})
+	$(info LDFLAGS: ${CXXFLAGS})
+	$(info OBJS: ${OBJS})
+	$(info C_SRCS: ${C_SRCS})
+	$(info CPP_SRCS: ${CPP_SRCS})
+	$(info INCLUDE: ${INCLUDE})
+	$(info LIBS: ${LIBS})
+

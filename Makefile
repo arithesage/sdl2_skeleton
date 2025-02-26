@@ -19,10 +19,12 @@ else
 endif
 
 SRC								:= src
+DEPS							:= deps
 BUILD							:= build
 OBJ								:= obj
 
-OBJ_PATH						:= ${OBJ}/${SYSTEM}
+OBJS_PATH						:= ${OBJ}/${SYSTEM}
+DEPS_OBJS_PATH					:= $(DEPS)/${OBJ}/${SYSTEM}
 BUILD_PATH						:= ${BUILD}/${SYSTEM}
 
 EXEC							:= ${BUILD}/${SYSTEM}/${EXEC}
@@ -41,7 +43,7 @@ else
 endif
 
 MAIN_FILE						:= $(notdir ${MAIN})
-MAIN_OBJ						:= ${OBJ_PATH}/$(call SRC2OBJ,${MAIN_FILE})
+MAIN_OBJ						:= ${OBJS_PATH}/$(call SRC2OBJ,${MAIN_FILE})
 
 C_SRCS							:= $(shell find ${SRC}/** -type f -name "*.c" -not -name "main.c")
 CPP_SRCS						:= $(shell find ${SRC}/** -type f -name "*.cpp" -not -name "main.cpp")
@@ -58,11 +60,13 @@ INCLUDE_PATHS					:= $(sort $(foreach file,${HEADERS},$(dir ${file})))
 INCLUDE							:= $(strip $(foreach inc,${INCLUDE_PATHS},-I ${inc}))
 LIBS							:= $(foreach lib,${LIBS},-l${lib})
 
-DEPS_LIBS						:= $(shell find deps/* -type f -name "*.hpp")
-DEPS_SRCS						:= $(shell find deps/* -type f -name "*.cpp")
-DEPS_INCLUDE_PATHS				:= $(sort $(foreach lib,${DEPS_LIBS},$(dir ${lib})))
-DEPS_INCLUDE					:= $(strip $(foreach lib,${DEPS_INCLUDE_PATHS},-I ${lib}))
-DEPS_OBJS						:= $(foreach src,${DEPS_SRCS},deps/obj/$(notdir $(call SRC2OBJ,${src})))
+DEPS_C_SRCS						:= $(shell find deps/* -type f -name "*.c")
+DEPS_CPP_SRCS					:= $(shell find deps/* -type f -name "*.cpp")
+DEPS_SRCS						:= $(strip ${DEPS_C_SRCS} ${DEPS_CPP_SRCS})
+DEPS_HEADERS					:= $(shell find deps/* -type f -name "*.hpp")
+DEPS_INCLUDE_PATHS				:= $(sort $(foreach file,${DEPS_HEADERS},$(dir ${file})))
+DEPS_INCLUDE					:= $(strip $(foreach inc,${DEPS_INCLUDE_PATHS},-I ${inc}))
+DEPS_OBJS						:= $(foreach src,${DEPS_SRCS},${DEPS_OBJS_PATH}/$(notdir $(subst .c,.o,$(subst .cpp,.o,${src})))
 
 ifeq (${C},)
 	C							:= clang
@@ -75,10 +79,10 @@ endif
 
 
 
-.PHONY: all clean_deps deps clean info run
+.PHONY: all cleandeps deps clean info run
 
 
-all: ${OBJ_PATH} ${BUILD_PATH} ${EXEC}
+all: ${OBJS_PATH} ${BUILD_PATH} ${EXEC}
 
 
 clean:
@@ -86,16 +90,21 @@ clean:
 	$(shell ${RMTREE} ${BUILD})
 
 
-clean_deps:
-	$(shell ${RMTREE} deps/obj)
+cleandeps:
+	${MAKE} -C ${DEPS} clean
+#	$(shell ${RMTREE} deps/obj)
+
+
+deps:
+	${MAKE} -C ${DEPS}
 
 
 ${BUILD_PATH}:
 	$(shell ${MKTREE} ${BUILD_PATH})
 
 
-${OBJ_PATH}:
-	$(shell ${MKTREE} ${OBJ_PATH})
+${OBJS_PATH}:
+	$(shell ${MKTREE} ${OBJS_PATH})
 
 
 # Builds the executable
@@ -117,24 +126,15 @@ endif
 
 
 # Builds all C files mirroring their folder tree
-${OBJ_PATH}/%.o: ${SRC}/%.c
+${OBJS_PATH}/%.o: ${SRC}/%.c
 	$(shell ${MKTREE} $(dir $@))
 	${C} -c $< -o $@ ${DEPS_INCLUDE} ${INCLUDE} ${CFLAGS}
 
 
 # Builds all CPP files mirroring their folder tree
-${OBJ_PATH}/%.o: ${SRC}/%.cpp
+${OBJS_PATH}/%.o: ${SRC}/%.cpp
 	$(shell ${MKTREE} $(dir $@))
 	${CXX} -c $< -o $@ ${DEPS_INCLUDE} ${INCLUDE} ${CXXFLAGS}
-
-
-# Old recipe for creating custom recipes for compiling all file exept main.
-# Did not work then because 'eval' was missing, but can be useful.
-#$(foreach src,${SRCS},$(eval $(call COMPILE,${src},$(call SRC2OBJ,${src}))))
-
-
-libs:
-	/bin/bash -c libs/build
 
 
 info:
@@ -152,10 +152,10 @@ info:
 	$(info OBJS: ${OBJS})
 	$(info INCLUDED_PATHS: ${INCLUDE})
 	$(info LIBS: ${LIBS})
-	$(info EXTRA_LIBS: ${EXTRA_LIBS})
-	$(info EXTRA_INCLUDE_PATHS: ${EXTRA_INCLUDE_PATHS})
-	$(info EXTRA_INCLUDE: ${EXTRA_INCLUDE})
-	$(info EXTRA_OBJS: ${EXTRA_OBJS})
+	$(info DEPS_SRCS: ${DEPS_SRCS})
+	$(info DEPS_HEADERS: ${DEPS_HEADERS})
+	$(info DEPS_INCLUDE: ${DEPS_INCLUDE})
+	$(info DEPS_OBJS: ${DEPS_OBJS})
 
 
 run:
